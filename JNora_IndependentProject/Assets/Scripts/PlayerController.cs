@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
 {
     // Controller Speeds
     private float speed = 4.0f;
-    private float mouseSensitivity = 500.0f;
+    private float mouseSensitivity = 1000.0f;
     // Input
     private float verticalInput;
     private float horizontalInput;
@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     // Update is called once per frame
