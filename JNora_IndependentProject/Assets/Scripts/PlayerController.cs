@@ -6,8 +6,8 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     // Controller Speeds
-    private float speed = 4.0f;
-    private float mouseSensitivity = 1000.0f;
+    private float speed = 10.0f;
+    private float mouseSensitivity = 5000.0f;
     // Input
     private float verticalInput;
     private float horizontalInput;
