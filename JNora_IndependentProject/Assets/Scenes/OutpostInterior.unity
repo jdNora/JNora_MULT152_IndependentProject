@@ -1245,7 +1245,7 @@ GameObject:
   - component: {fileID: 210336865}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1948,8 +1948,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bbd1cf6417b90d4bb320ab597f3325e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sensX: 500
-  sensY: 500
+  sensX: 1000
+  sensY: 1000
   orientation: {fileID: 617688284}
 --- !u!1001 &435842850
 PrefabInstance:
@@ -2883,7 +2883,7 @@ GameObject:
   - component: {fileID: 625808800}
   m_Layer: 0
   m_Name: PlayerObject
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

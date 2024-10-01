@@ -5,13 +5,43 @@ using UnityEngine;
 public class ElectricalBox : MonoBehaviour
 {
     [SerializeField] GameManager gameManager;
+    private bool canRepair = false;
 
-    private void OnTriggerStay(Collider other) // Optimize with Enter & Exit functions & bool
+    private void Update()
     {
-        if (Input.GetKey(KeyCode.E) && other == gameManager.GetComponent<GameManager>().player)
+        if((canRepair) && Input.GetKeyDown(KeyCode.E))
         {
-            print("Power restored!");
+            attemptElectricalRepair();
+        }
+    }
+
+    private void OnTriggerEnter(Collider other) // Optimize with Enter & Exit functions & bool
+    {
+        if(other.gameObject.CompareTag("Player"))
+        {
+            print("Player entered electrical.");
+            canRepair = true;
+        }
+    }
+    private void OnTriggerExit(Collider other) // Optimize with Enter & Exit functions & bool
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            print("Player exited electrical.");
+            canRepair = false;
+        }
+    }
+
+    private void attemptElectricalRepair()
+    {
+        if(!gameManager.electricityWorking)
+        {
             gameManager.GetComponent<GameManager>().electricityWorking = true;
+            print("Power restored!");
+        }
+        else
+        {
+            print("It doesn't need to be repaired.");
         }
     }
 }
