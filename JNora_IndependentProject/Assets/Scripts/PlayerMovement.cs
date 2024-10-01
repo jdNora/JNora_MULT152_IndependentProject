@@ -41,12 +41,10 @@ public class PlayerMovement : MonoBehaviour
         if (grounded)
         {
             rb.drag = groundDrag;
-            print("Drag");
         }
         else
         {
             rb.drag = 0.0f;
-            print("No drag");
         }
 
         MyInput();
