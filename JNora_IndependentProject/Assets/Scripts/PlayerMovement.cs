@@ -5,17 +5,19 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     // Movement Values
-    public float movementSpeed = 8.0f;
+    public float baseSpeed = 8.0f;
     public float groundDrag = 5.0f;
     public float jumpForce = 4.0f;
     public float jumpCooldown = 1.0f;
     public float airMultiplier = 0.3f;
+    public float runMultiplier = 1.5f;
 
     // Player Status
     public float playerHeight = 2.0f;
     public LayerMask whatIsGround;
     bool grounded;
     bool readyToJump = true;
+    public float currentSpeed;
 
     public Transform orientation;
 
@@ -28,11 +30,13 @@ public class PlayerMovement : MonoBehaviour
 
     // Keybinds
     public KeyCode jumpKey = KeyCode.Space;
+    public KeyCode sprintKey = KeyCode.LeftShift;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+        currentSpeed = baseSpeed;
     }
 
     private void Update()
@@ -45,6 +49,15 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             rb.drag = 0.0f;
+        }
+
+        if (Input.GetKey(sprintKey))
+        {
+            currentSpeed = baseSpeed * runMultiplier;
+        }
+        else
+        {
+            currentSpeed = baseSpeed;
         }
 
         MyInput();
@@ -75,11 +88,11 @@ public class PlayerMovement : MonoBehaviour
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
         if(grounded)
         {
-            rb.AddForce(moveDirection.normalized * movementSpeed * 5.0f, ForceMode.Force);
+            rb.AddForce(moveDirection.normalized * currentSpeed * 5.0f, ForceMode.Force);
         }
         else
         {
-            rb.AddForce(moveDirection.normalized * movementSpeed * airMultiplier * 5.0f, ForceMode.Force);
+            rb.AddForce(moveDirection.normalized * currentSpeed * airMultiplier * 5.0f, ForceMode.Force);
         }
     }
 
@@ -88,9 +101,9 @@ public class PlayerMovement : MonoBehaviour
         Vector3 flatVel = new Vector3(rb.velocity.x, 0.0f, rb.velocity.z);
 
         // Limit velocity
-        if(flatVel.magnitude > movementSpeed)
+        if(flatVel.magnitude > currentSpeed)
         {
-            Vector3 limitedVel = flatVel.normalized * movementSpeed;
+            Vector3 limitedVel = flatVel.normalized * currentSpeed;
             rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
         }
     }
