@@ -4,22 +4,16 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    // NOTICE: THE PLAYER MOVEMENT USES THE RIGIDBODY FOR SMOOTH AND ACCURATE MOTION
+
     // Movement Values
-    public float baseSpeed = 8.0f;
+    public float baseSpeed = 6.0f;
     public float groundDrag = 5.0f;
-    public float jumpForce = 4.0f;
-    public float jumpCooldown = 1.0f;
-    public float airMultiplier = 0.3f;
-    public float runMultiplier = 1.5f;
+    public float runMultiplier = 1.75f;
 
     // Player Status
     public float playerHeight = 2.0f;
-    public LayerMask whatIsGround;
-    bool grounded;
-    bool readyToJump = true;
-    public float currentSpeed;
-
-    public Transform orientation;
+    public float movementSpeed;
 
     float horizontalInput;
     float verticalInput;
@@ -29,39 +23,19 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody rb;
 
     // Keybinds
-    public KeyCode jumpKey = KeyCode.Space;
     public KeyCode sprintKey = KeyCode.LeftShift;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
-        currentSpeed = baseSpeed;
+        rb.drag = groundDrag;
+        movementSpeed = baseSpeed;
     }
 
     private void Update()
     {
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f);
-        if (grounded)
-        {
-            rb.drag = groundDrag;
-        }
-        else
-        {
-            rb.drag = 0.0f;
-        }
-
-        if (Input.GetKey(sprintKey))
-        {
-            currentSpeed = baseSpeed * runMultiplier;
-        }
-        else
-        {
-            currentSpeed = baseSpeed;
-        }
-
-        MyInput();
-        SpeedControl();
+        CheckInput();
     }
 
     private void FixedUpdate()
@@ -70,53 +44,36 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
-    private void MyInput()
+    private void CheckInput() // Checks for input
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
-        if(Input.GetKey(jumpKey) && readyToJump && grounded)
+        if (Input.GetKey(sprintKey))
         {
-            readyToJump = false;
-            Jump();
-
-            Invoke(nameof(ResetJump), jumpCooldown);
-        }
-    }
-    private void MovePlayer()
-    {
-        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-        if(grounded)
-        {
-            rb.AddForce(moveDirection.normalized * currentSpeed * 5.0f, ForceMode.Force);
+            movementSpeed = baseSpeed * runMultiplier;
         }
         else
         {
-            rb.AddForce(moveDirection.normalized * currentSpeed * airMultiplier * 5.0f, ForceMode.Force);
+            movementSpeed = baseSpeed;
         }
     }
-
-    private void SpeedControl()
+    
+    private void MovePlayer() // Handles the player's movement
     {
+        // Get movement direction and apply force
+
+        moveDirection = transform.forward * verticalInput + transform.right * horizontalInput;
+        rb.AddForce(moveDirection.normalized * movementSpeed * 5.0f, ForceMode.Force);
+
+        // Limits the player's forward and horizontal velocity to the intended speed
+
         Vector3 flatVel = new Vector3(rb.velocity.x, 0.0f, rb.velocity.z);
 
-        // Limit velocity
-        if(flatVel.magnitude > currentSpeed)
+        if (flatVel.magnitude > movementSpeed)
         {
-            Vector3 limitedVel = flatVel.normalized * currentSpeed;
+            Vector3 limitedVel = flatVel.normalized * movementSpeed;
             rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
         }
-    }
-
-    private void Jump()
-    {
-        // Reset y velocity
-        rb.velocity = new Vector3(rb.velocity.x, 0.0f, rb.velocity.z);
-        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-    }
-
-    private void ResetJump()
-    {
-        readyToJump = true;
     }
 }

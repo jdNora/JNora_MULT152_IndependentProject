@@ -72,4 +72,4 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # Large Asset Files
-/[Aa]ssets/[Aa]ssets/*
+/[Aa]ssets/[Ii]mports/*
