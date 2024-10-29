@@ -8,12 +8,12 @@ public class PlayerMovement : MonoBehaviour
 
     // Movement Values
     public float baseSpeed = 6.0f;
-    public float groundDrag = 0.0f; // Use for strong winds and sludge
+    public float groundDrag = 5.0f; // Use for strong winds and slush
     public float runMultiplier = 1.75f;
 
     // Player Status
     public float playerHeight = 2.0f;
-    public float movementSpeed;
+    float movementSpeed;
 
     float horizontalInput;
     float verticalInput;
