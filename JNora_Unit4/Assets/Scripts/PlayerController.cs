@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
         float magnitude = forwardInput * speed * Time.deltaTime;
         rbPlayer.AddForce(focalPoint.transform.forward * magnitude, ForceMode.Impulse);
 
+        // Simplified with Mathf.Abs
         rendererPlayer.material.color = new Color(1.0f, 1.0f - Mathf.Abs(forwardInput), 0.0f);
     }
 }
