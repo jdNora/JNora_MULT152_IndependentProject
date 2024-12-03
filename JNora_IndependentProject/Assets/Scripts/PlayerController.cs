@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,8 @@ public class PlayerController : MonoBehaviour
     // Player Status
     public float playerHeight = 2.0f;
     float movementSpeed;
+
+    public Boolean tabletUp = false;
 
     float horizontalInput;
     float verticalInput;
@@ -77,10 +80,12 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(tabletKey))
         {
             Cursor.lockState = CursorLockMode.None;
+            tabletUp = true;
         }
         else if(Cursor.lockState == CursorLockMode.None)
         {
             Cursor.lockState = CursorLockMode.Locked;
+            tabletUp = false;
         }
     }
 
@@ -89,7 +94,7 @@ public class PlayerController : MonoBehaviour
         if (stepCooldown > stepRate)
         {
             stepCooldown = 0;
-            playerAudioSource.pitch = Random.Range(0.7f, 1.3f);
+            playerAudioSource.pitch = UnityEngine.Random.Range(0.7f, 1.3f);
             playerAudioSource.PlayOneShot(footstep);
         }
     }
