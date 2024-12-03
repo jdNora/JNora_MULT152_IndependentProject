@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     // NOTICE: THE PLAYER MOVEMENT USES THE RIGIDBODY FOR SMOOTH AND ACCURATE MOTION
 
@@ -29,6 +29,7 @@ public class PlayerMovement : MonoBehaviour
 
     // Keybinds
     public KeyCode sprintKey = KeyCode.LeftShift;
+    public KeyCode tabletKey = KeyCode.Space;
 
     private void Start()
     {
@@ -72,6 +73,15 @@ public class PlayerMovement : MonoBehaviour
             movementSpeed = baseSpeed;
             stepRate = 0.6f;
         }
+
+        if (Input.GetKey(tabletKey))
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
+        else if(Cursor.lockState == CursorLockMode.None)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
     }
 
     private void PlayFootsteps()
@@ -94,6 +104,7 @@ public class PlayerMovement : MonoBehaviour
             playerObject.GetComponent<CapsuleCollider>().material.dynamicFriction = 0.1f;
             playerObject.GetComponent<CapsuleCollider>().material.frictionCombine = PhysicMaterialCombine.Minimum;
         }
+        // Stabilize when there's no input
         else
         {
             playerRigidbody.velocity = Vector3.Lerp(playerRigidbody.velocity, new Vector3(0, playerRigidbody.velocity.y, 0), 0.2f);
@@ -102,7 +113,6 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Limits the player's forward and horizontal velocity to the intended speed
-
         Vector3 flatVel = new Vector3(playerRigidbody.velocity.x, 0.0f, playerRigidbody.velocity.z);
 
         if (flatVel.magnitude > movementSpeed)

@@ -27,21 +27,24 @@ public class PlayerCam : MonoBehaviour
 
     void Update()
     {
-        // Get mouse direction
-        xVel = Mathf.Lerp(xVel, Input.GetAxis("Mouse X"), 0.1f / smoothing);
-        yVel = Mathf.Lerp(yVel, Input.GetAxis("Mouse Y"), 0.1f / smoothing);
+        if(Cursor.lockState == CursorLockMode.Locked)
+        {
+            // Get mouse direction
+            xVel = Mathf.Lerp(xVel, Input.GetAxis("Mouse X"), 0.1f / smoothing);
+            yVel = Mathf.Lerp(yVel, Input.GetAxis("Mouse Y"), 0.1f / smoothing);
 
-        // Apply look force
-        float mouseX = xVel * sensX * Time.deltaTime;
-        float mouseY = yVel * sensY * Time.deltaTime;
+            // Apply look force
+            float mouseX = xVel * sensX * Time.deltaTime;
+            float mouseY = yVel * sensY * Time.deltaTime;
 
-        // Change recorded values
-        pitch += mouseX;
-        yaw -= mouseY;
-        yaw = Mathf.Clamp(yaw, -80.0f, 80.0f);
+            // Change recorded values
+            pitch += mouseX;
+            yaw -= mouseY;
+            yaw = Mathf.Clamp(yaw, -80.0f, 80.0f);
 
-        // Adjust actual orientation
-        transform.rotation = Quaternion.Euler(yaw, pitch, 0);
-        player.rotation = Quaternion.Euler(0, pitch, 0);
+            // Adjust actual orientation
+            transform.rotation = Quaternion.Euler(yaw, pitch, 0);
+            player.rotation = Quaternion.Euler(0, pitch, 0);
+        }
     }
 }
