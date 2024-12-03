@@ -8,6 +8,7 @@ public class PlayerCam : MonoBehaviour
 
     public float sensX = 1000.0f;
     public float sensY = 1000.0f;
+    public float smoothing = 1.0f;
 
     [SerializeField] Transform player;
 
@@ -27,8 +28,8 @@ public class PlayerCam : MonoBehaviour
     void Update()
     {
         // Get mouse direction
-        xVel = Mathf.Lerp(xVel, Input.GetAxis("Mouse X"), 0.03f);
-        yVel = Mathf.Lerp(yVel, Input.GetAxis("Mouse Y"), 0.03f);
+        xVel = Mathf.Lerp(xVel, Input.GetAxis("Mouse X"), 0.1f / smoothing);
+        yVel = Mathf.Lerp(yVel, Input.GetAxis("Mouse Y"), 0.1f / smoothing);
 
         // Apply look force
         float mouseX = xVel * sensX * Time.deltaTime;
