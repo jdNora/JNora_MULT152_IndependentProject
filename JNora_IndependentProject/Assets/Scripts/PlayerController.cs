@@ -77,15 +77,9 @@ public class PlayerController : MonoBehaviour
             stepRate = 0.6f;
         }
 
-        if (Input.GetKey(tabletKey))
+        if (Input.GetKeyDown(tabletKey))
         {
-            Cursor.lockState = CursorLockMode.None;
-            tabletUp = true;
-        }
-        else if(Cursor.lockState == CursorLockMode.None)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            tabletUp = false;
+            tabletUp = !tabletUp;
         }
     }
 

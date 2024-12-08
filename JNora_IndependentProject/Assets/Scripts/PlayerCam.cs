@@ -8,7 +8,7 @@ public class PlayerCam : MonoBehaviour
 
     public float sensX = 1000.0f;
     public float sensY = 1000.0f;
-    public float smoothing = 1.0f;
+    public float smoothing = 0.5f;
 
     [SerializeField] Transform player;
 
