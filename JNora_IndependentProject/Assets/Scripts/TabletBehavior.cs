@@ -1,14 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Device;
 using UnityEngine.UIElements;
+using TMPro;
 
 public class TabletBehavior : MonoBehaviour
 {
+    [SerializeField] GameManager gameManager;
     [SerializeField] GameObject player;
+
+    // Display Content
     [SerializeField] Canvas displayCanvas;
     [SerializeField] GameObject[] screens;
+    [SerializeField] GameObject videoPanel;
     GameObject currentScreen;
+
+    // Screen Content
+    [SerializeField]  temperatureText;
 
     // Components
     PlayerController playerController;
@@ -29,10 +38,18 @@ public class TabletBehavior : MonoBehaviour
 
     void Update()
     {
-        if(playerController.tabletUp) // While Tablet Opened
+        TabletActions();
+
+    }
+
+    void TabletActions()
+    {
+        // Tablet behavior handled in PlayerController for easier detection
+        if (playerController.tabletUp) // While Tablet Opened
         {
             if (animator.GetBool("TabletUp") == false) // On Tablet Open
             {
+                videoPanel.SetActive(true); // Save performance
                 audioSource.PlayOneShot(maximizeSFX);
                 UnityEngine.Cursor.lockState = CursorLockMode.None;
                 if (currentScreen != screens[0])
@@ -41,11 +58,18 @@ public class TabletBehavior : MonoBehaviour
                 }
             }
             animator.SetBool("TabletUp", true);
+
+            // Return to menu
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                SwitchScreen(0);
+            }
         }
         else // While Tablet Closed
         {
             if (animator.GetBool("TabletUp") == true) // On Tablet Close
             {
+                videoPanel.SetActive(false);
                 audioSource.PlayOneShot(minimizeSFX);
                 UnityEngine.Cursor.lockState = CursorLockMode.Locked;
             }
@@ -53,10 +77,19 @@ public class TabletBehavior : MonoBehaviour
         }
     }
 
+    void UpdateScreens()
+    {
+        // Weather screen
+        temperatureText.GetComponent<TextMesh>
+    }
+
     public void SwitchScreen(int screen)
     {
         audioSource.PlayOneShot(clickSFX);
-        currentScreen.SetActive(false);
+        foreach (var s in screens)
+        {
+            s.SetActive(false);
+        }
         UnityEngine.Cursor.lockState = CursorLockMode.None;
         switch (screen)
         {
@@ -74,18 +107,22 @@ public class TabletBehavior : MonoBehaviour
                 break;
             case 4:
                 currentScreen = screens[4];
+                UnityEngine.Cursor.lockState = CursorLockMode.Locked;
                 break;
             case 5:
                 currentScreen = screens[5];
                 break;
             case 6:
                 currentScreen = screens[6];
-                UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+                break;
+            case 7:
+                currentScreen = screens[7];
                 break;
             default:
                 currentScreen = screens[0];
                 break;
         }
+        Debug.Log("Current screen: " + currentScreen.name);
         currentScreen.SetActive(true);
     }
 }

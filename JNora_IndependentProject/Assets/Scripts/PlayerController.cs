@@ -48,6 +48,11 @@ public class PlayerController : MonoBehaviour
         CheckInput();
 
         stepCooldown += Time.deltaTime;
+
+        if(!tabletUp)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
     }
 
     private void FixedUpdate()

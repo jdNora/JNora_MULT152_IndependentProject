@@ -28,8 +28,10 @@ public class PlayerStatus : MonoBehaviour
     {
         if(energy <= 0)
         {
-            print("You succumbed to the cold...");
-            Application.Quit();
+            PlayerFaint();
+        }
+        else if(energy <= 50)
+        {
         }
     }
 
@@ -49,5 +51,10 @@ public class PlayerStatus : MonoBehaviour
         {
             energy -= energyDrain;
         }
+    }
+
+    private void PlayerFaint()
+    {
+
     }
 }

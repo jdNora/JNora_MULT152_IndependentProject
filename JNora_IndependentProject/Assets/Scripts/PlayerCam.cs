@@ -20,11 +20,6 @@ public class PlayerCam : MonoBehaviour
     float xVel = 0.0f;
     float yVel = 0.0f;
 
-    void Start()
-    {
-        Cursor.lockState = CursorLockMode.Locked;
-    }
-
     void Update()
     {
         if(Cursor.lockState == CursorLockMode.Locked)

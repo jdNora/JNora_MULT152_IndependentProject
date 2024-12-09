@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
 
     public int currentHour = 6;
     public int currentMinute = 0;
-    public float outdoorTemp = 37.0f; // Temperature the player's body trends towards.
+    public float outdoorTemp = 37.0f; // Temperature (Celcius) the player's body trends towards.
 
     public bool electricityWorking = true;
     public float failChance = 20.0f;
@@ -33,21 +33,26 @@ public class GameManager : MonoBehaviour
 
     }
 
-    private void UpdateTime() // 4 IRL seconds = 1 Ingame minute (gameplay tick)
+    private void UpdateTime() // Fires every 4 IRL seconds = 1 Ingame minute (gameplay tick)
     {
+        // Time flow
         if(currentMinute < 59)
         {
             currentMinute += 1;
         }
-        else
+        else // Fires every hour
         {
             currentHour += 1;
             currentMinute = 0;
-            HourlyUpdate();
+            ElectricalUpdate();
         }
+
+        // [ EVENT TIMELINE ]
+        // 0600 Game starts
+        // 2400 Game ends
     }
 
-    private void HourlyUpdate()
+    private void ElectricalUpdate()
     {
         // Electricity
         if(electricityWorking)
