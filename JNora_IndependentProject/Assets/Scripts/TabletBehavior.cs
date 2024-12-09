@@ -17,7 +17,7 @@ public class TabletBehavior : MonoBehaviour
     GameObject currentScreen;
 
     // Screen Content
-    [SerializeField]  temperatureText;
+    [SerializeField] GameObject temperatureText;
 
     // Components
     PlayerController playerController;
@@ -80,7 +80,6 @@ public class TabletBehavior : MonoBehaviour
     void UpdateScreens()
     {
         // Weather screen
-        temperatureText.GetComponent<TextMesh>
     }
 
     public void SwitchScreen(int screen)
