@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
     public float playerHeight = 2.0f;
     float movementSpeed;
 
+    public Boolean inputEnabled = true;
+    public Boolean canRun = true;
     public Boolean tabletUp = false;
 
     float horizontalInput;
@@ -24,7 +26,11 @@ public class PlayerController : MonoBehaviour
 
     Rigidbody playerRigidbody;
     AudioSource playerAudioSource;
-    [SerializeField] GameObject playerObject;
+    [SerializeField] GameObject playerModel;
+    [SerializeField] GameObject playerCam;
+    [SerializeField] GameObject tabletObject;
+    TabletBehavior tabletBehavior;
+    public GameObject transition;
 
     [SerializeField] AudioClip footstep;
     float stepRate = 0.6f;
@@ -41,6 +47,7 @@ public class PlayerController : MonoBehaviour
         movementSpeed = baseSpeed;
 
         playerAudioSource = GetComponent<AudioSource>();
+        tabletBehavior = tabletObject.GetComponent<TabletBehavior>();
     }
 
     private void Update()
@@ -60,31 +67,84 @@ public class PlayerController : MonoBehaviour
         MovePlayer();
     }
 
+    int transitionContext = 0;
+    IEnumerator PostCameraTransition() // For behavior AFTER the transition effect
+    {
+        yield return new WaitForSeconds(2);
+
+        switch (transitionContext)
+        {
+            case 1:
+                tabletBehavior.canTakePhoto = true;
+                tabletBehavior.cameraOverlay.SetActive(true);
+                playerCam.GetComponent<Camera>().fieldOfView = 50;
+                break;
+
+            case 2:
+                tabletObject.GetComponent<TabletBehavior>().SwitchScreen(0);
+                transition.SetActive(false);
+                inputEnabled = true;
+                break;
+
+            case 3:
+
+                break;
+
+            default:
+
+                break;
+        }
+    }
+
+    public void FadeOutInTransition(int context) // 1 = Camera Mode In // 2 = Camera Mode Out // 3 = Faint
+    {
+        transitionContext = context;
+        inputEnabled = false;
+
+        transition.SetActive(true);
+
+        if (transitionContext == 1 || transitionContext == 2)
+        {
+            transition.GetComponent<Animator>().SetTrigger("FadeOutIn");
+            StartCoroutine(PostCameraTransition());
+        }
+        else if (transitionContext == 3)
+        {
+            transition.SetActive(true);
+            transition.GetComponent<Animator>().SetTrigger("FadeOut");
+        }
+    }
 
     private void CheckInput() // Checks for input
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
-        if (horizontalInput != 0 || verticalInput != 0)
+        if (inputEnabled)
         {
-            PlayFootsteps();
-        }
+            if (horizontalInput != 0 || verticalInput != 0)
+            {
+                PlayFootsteps();
+            }
 
-        if (Input.GetKey(sprintKey))
-        {
-            movementSpeed = baseSpeed * runMultiplier;
-            stepRate = 0.45f;
-        }
-        else
-        {
-            movementSpeed = baseSpeed;
-            stepRate = 0.6f;
-        }
+            if (Input.GetKey(sprintKey) && canRun)
+            {
+                movementSpeed = baseSpeed * runMultiplier;
+                stepRate = 0.45f;
+            }
+            else
+            {
+                movementSpeed = baseSpeed;
+                stepRate = 0.6f;
+            }
 
-        if (Input.GetKeyDown(tabletKey))
-        {
-            tabletUp = !tabletUp;
+            if (Input.GetKeyDown(tabletKey))
+            {
+                if (!tabletObject.GetComponent<TabletBehavior>().cameraModeActive && !tabletObject.GetComponent<TabletBehavior>().compassModeActive)
+                {
+                    tabletUp = !tabletUp;
+                }
+            }
         }
     }
 
@@ -101,19 +161,19 @@ public class PlayerController : MonoBehaviour
     private void MovePlayer() // Handles the player's movement
     {
         // Get movement direction and apply force
-        if (verticalInput != 0 || horizontalInput != 0)
+        if (inputEnabled && (verticalInput != 0 || horizontalInput != 0))
         {
             moveDirection = transform.forward * verticalInput + transform.right * horizontalInput;
             playerRigidbody.AddForce(moveDirection.normalized * movementSpeed * 5.0f, ForceMode.Force);
-            playerObject.GetComponent<CapsuleCollider>().material.dynamicFriction = 0.1f;
-            playerObject.GetComponent<CapsuleCollider>().material.frictionCombine = PhysicMaterialCombine.Minimum;
+            playerModel.GetComponent<CapsuleCollider>().material.dynamicFriction = 0.1f;
+            playerModel.GetComponent<CapsuleCollider>().material.frictionCombine = PhysicMaterialCombine.Minimum;
         }
         // Stabilize when there's no input
         else
         {
             playerRigidbody.velocity = Vector3.Lerp(playerRigidbody.velocity, new Vector3(0, playerRigidbody.velocity.y, 0), 0.2f);
-            playerObject.GetComponent<CapsuleCollider>().material.dynamicFriction = 1.0f;
-            playerObject.GetComponent<CapsuleCollider>().material.frictionCombine = PhysicMaterialCombine.Average;
+            playerModel.GetComponent<CapsuleCollider>().material.dynamicFriction = 1.0f;
+            playerModel.GetComponent<CapsuleCollider>().material.frictionCombine = PhysicMaterialCombine.Average;
         }
 
         // Limits the player's forward and horizontal velocity to the intended speed

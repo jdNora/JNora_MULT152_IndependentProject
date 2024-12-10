@@ -14,47 +14,60 @@ public class PlayerStatus : MonoBehaviour
     */
 
     [SerializeField] GameManager gameManager;
+    [SerializeField] GameObject tabletObject;
+    PlayerController playerController;
+    Animator animator;
 
-    public float energy = 100.0f;
+    public bool conscious = true;
+    public float vitals = 100.0f;
     public float bodyTemp = 37.0f;
 
     void Start()
     {
         InvokeRepeating("UpdateBodyTemp", 0, 0.25f);
+        playerController = GetComponent<PlayerController>();
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(energy <= 0)
+        if(vitals <= 20)
         {
-            PlayerFaint();
+            playerController.canRun = false;
+            if (vitals <= 0)
+            {
+                PlayerFaint();
+            }
         }
-        else if(energy <= 50)
+        else
         {
+            playerController.canRun = true;
         }
     }
 
     private void UpdateBodyTemp()
     {
         // Adjust Temp
-        bodyTemp = Mathf.Lerp(bodyTemp, gameManager.GetComponent<GameManager>().outdoorTemp, 0.02f);
+        bodyTemp = Mathf.Lerp(bodyTemp, gameManager.GetComponent<GameManager>().tempTrend, 0.02f);
         if (Mathf.Abs(bodyTemp - Mathf.Round(bodyTemp)) < 0.01f)
         {
             bodyTemp = Mathf.Round(bodyTemp);
         }
 
-
-        // Energy Loss
+        // Vitals Loss
         float energyDrain = (35 - bodyTemp) * 0.05f;
         if (bodyTemp <= 35)
         {
-            energy -= energyDrain;
+            vitals -= energyDrain;
         }
     }
 
     private void PlayerFaint()
     {
-
+        Debug.Log("Player fainted...");
+        
+        playerController.inputEnabled = false;
+        conscious = false; // Game manager detects this and triggers game-wide events
     }
 }

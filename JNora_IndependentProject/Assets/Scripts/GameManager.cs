@@ -1,39 +1,60 @@
+using CodiceApp;
+using PlasticGui.WorkspaceWindow.BrowseRepository;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] GameObject spawnpointObjects;
-    public Transform[] spawnpoints;
+    public GameObject playerObject;
+    public GameObject tabletObject;
+
+    [SerializeField] Material[] skyboxes;
+    [SerializeField] Light sunlight;
+    [SerializeField] ParticleSystem snowfall;
+
+    public GameObject[] wildlifeSpawns;
+    public GameObject researcherComputer;
+    public GameObject targetAnimal;
+    public AnimalBehavior animalBehavior;
 
     public int currentHour = 6;
     public int currentMinute = 0;
-    public float outdoorTemp = 37.0f; // Temperature (Celcius) the player's body trends towards.
+    public float tempTrend = 37.0f; // Temperature (Celcius) the player's body trends towards.
 
     public bool electricityWorking = true;
     public float failChance = 20.0f;
 
-    public GameObject player;
-
     void Start()
     {
         // Prepare gameplay scene
-        //spawnpointObjects.GetComponentInChildren   FIX THIS
+        SpawnWildlife();
+        Debug.Log("Current wildlife index: " + animalBehavior.currentAnimalIndex);
 
         // Initiate Cutscene
 
         // Begin normal gameplay functions
-        InvokeRepeating("UpdateTime", 0, 4);
+        InvokeRepeating("UpdateTime", 0, 1);
+    }
 
+    void Update()
+    {
+        if(!playerObject.GetComponent<PlayerStatus>().conscious)
+        {
+            // Trigger faint animation and time pass events
+        }
     }
 
     private void SpawnWildlife()
     {
+        GameObject selectedSpawnLocation = wildlifeSpawns[Random.Range(0, wildlifeSpawns.Length)];
+        targetAnimal.transform.position = selectedSpawnLocation.transform.position;
+        tabletObject.GetComponent<TabletBehavior>().objectiveTransform = selectedSpawnLocation.transform;
+        animalBehavior.NextAnimal();
 
     }
 
-    private void UpdateTime() // Fires every 4 IRL seconds = 1 Ingame minute (gameplay tick)
+    private void UpdateTime() // Fires every 1 IRL seconds = 1 Ingame minute (gameplay tick)
     {
         // Time flow
         if(currentMinute < 59)
@@ -46,6 +67,19 @@ public class GameManager : MonoBehaviour
             currentMinute = 0;
             ElectricalUpdate();
         }
+
+        var main = snowfall.main;
+        var shape = snowfall.shape;
+        float hoursPassedPlusOne = ((currentHour + (currentMinute / 60)) - 5);
+
+        main.simulationSpeed = 1 + (hoursPassedPlusOne * 0.3f);
+        shape.radius = 100 - (hoursPassedPlusOne * 5);
+        RenderSettings.fogDensity = 0.03f + 0.005f * hoursPassedPlusOne;
+        if (currentHour >= 12 && currentHour <= 20)
+        {
+            RenderSettings.skybox = skyboxes[Mathf.RoundToInt(currentHour - 12)];
+        }
+        sunlight.intensity = 0.5f - (0.5f * (hoursPassedPlusOne / 6));
 
         // [ EVENT TIMELINE ]
         // 0600 Game starts
