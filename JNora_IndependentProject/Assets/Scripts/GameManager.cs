@@ -28,12 +28,10 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         // Prepare gameplay scene
+
         SpawnWildlife();
         Debug.Log("Current wildlife index: " + animalBehavior.currentAnimalIndex);
 
-        // Initiate Cutscene
-
-        // Begin normal gameplay functions
         InvokeRepeating("UpdateTime", 0, 1);
     }
 
@@ -43,6 +41,11 @@ public class GameManager : MonoBehaviour
         {
             // Trigger faint animation and time pass events
         }
+    }
+
+    public void CompleteObjective()
+    {
+        SpawnWildlife();
     }
 
     private void SpawnWildlife()
@@ -68,9 +71,10 @@ public class GameManager : MonoBehaviour
             ElectricalUpdate();
         }
 
+        // Environment Effects
         var main = snowfall.main;
         var shape = snowfall.shape;
-        float hoursPassedPlusOne = ((currentHour + (currentMinute / 60)) - 5);
+        float hoursPassedPlusOne = ((currentHour + (currentMinute / 60.0f)) - 5.0f);
 
         main.simulationSpeed = 1 + (hoursPassedPlusOne * 0.3f);
         shape.radius = 100 - (hoursPassedPlusOne * 5);
@@ -80,6 +84,9 @@ public class GameManager : MonoBehaviour
             RenderSettings.skybox = skyboxes[Mathf.RoundToInt(currentHour - 12)];
         }
         sunlight.intensity = 0.5f - (0.5f * (hoursPassedPlusOne / 6));
+
+        // Gameplay Effects
+        tempTrend = 37.0f - (hoursPassedPlusOne - 1.0f);
 
         // [ EVENT TIMELINE ]
         // 0600 Game starts
@@ -95,13 +102,11 @@ public class GameManager : MonoBehaviour
             if (roll > failChance) // Succeed
             {
                 failChance += 20;
-                print("The outpost's electrical power is deteriorating...");
             }
             else // Fail
             {
                 failChance = 20;
                 electricityWorking = false;
-                print("The outpost's electrical power went out.");
             }
         }
     }

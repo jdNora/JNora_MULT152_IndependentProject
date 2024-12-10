@@ -25,13 +25,10 @@ public class AnimalBehavior : MonoBehaviour
             spriteObject.SetActive(true);
             transform.LookAt(playerCamTransform.position);
 
+            // FIX THIS ALPHA FADE EFFECT
             float distance = (playerCamTransform.position - transform.position).magnitude;
-            print("Before clamp: " + distance);
             distance = Mathf.Clamp(distance, 0, 20);
-            print("After clamp: " + distance);
-
             Color tempColor = animalSpriteRenderer.color;
-            print("Temp color: " + tempColor);
             tempColor.a = (255 - (distance / 20) * 255);
             animalSpriteRenderer.color = tempColor;
         }

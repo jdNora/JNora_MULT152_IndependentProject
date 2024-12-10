@@ -15,10 +15,13 @@ public class PlayerStatus : MonoBehaviour
 
     [SerializeField] GameManager gameManager;
     [SerializeField] GameObject tabletObject;
+    [SerializeField] GameObject playerModel;
     PlayerController playerController;
     Animator animator;
 
     public bool conscious = true;
+    public bool inWarmZone = false;
+    public bool inColdZone = false;
     public float vitals = 100.0f;
     public float bodyTemp = 37.0f;
 
@@ -32,7 +35,7 @@ public class PlayerStatus : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(vitals <= 20)
+        if (vitals <= 20)
         {
             playerController.canRun = false;
             if (vitals <= 0)
@@ -46,10 +49,26 @@ public class PlayerStatus : MonoBehaviour
         }
     }
 
+    
+
     private void UpdateBodyTemp()
     {
+        float targetTemp;
+        if (inWarmZone)
+        {
+            targetTemp = 37.0f;
+        }
+        else if (inColdZone)
+        {
+            targetTemp = gameManager.GetComponent<GameManager>().tempTrend - 5.0f;
+        }
+        else
+        {
+            targetTemp = gameManager.GetComponent<GameManager>().tempTrend;
+        }
+
         // Adjust Temp
-        bodyTemp = Mathf.Lerp(bodyTemp, gameManager.GetComponent<GameManager>().tempTrend, 0.02f);
+        bodyTemp = Mathf.Lerp(bodyTemp, targetTemp, 0.02f);
         if (Mathf.Abs(bodyTemp - Mathf.Round(bodyTemp)) < 0.01f)
         {
             bodyTemp = Mathf.Round(bodyTemp);
@@ -63,10 +82,10 @@ public class PlayerStatus : MonoBehaviour
         }
     }
 
-    private void PlayerFaint()
+    void PlayerFaint()
     {
         Debug.Log("Player fainted...");
-        
+
         playerController.inputEnabled = false;
         conscious = false; // Game manager detects this and triggers game-wide events
     }

@@ -214,7 +214,7 @@ public class TabletBehavior : MonoBehaviour
             if(hit.collider.gameObject == targetAnimal)
             {
                 // Complete objective
-                Debug.Log("Target photographed!");
+                gameManager.CompleteObjective();
             }
             Debug.Log("Target undetected...");
         }
@@ -297,7 +297,6 @@ public class TabletBehavior : MonoBehaviour
                 break;
         }
         currentScreen = screens[currentScreenIndex];
-        Debug.Log("Current screen: " + currentScreen.name);
         currentScreen.SetActive(true);
     }
 
