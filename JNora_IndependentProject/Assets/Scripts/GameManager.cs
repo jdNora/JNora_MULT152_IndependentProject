@@ -1,5 +1,3 @@
-using CodiceApp;
-using PlasticGui.WorkspaceWindow.BrowseRepository;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

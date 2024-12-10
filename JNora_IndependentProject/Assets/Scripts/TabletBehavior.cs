@@ -1,4 +1,3 @@
-using GluonGui.WorkspaceWindow.Views.WorkspaceExplorer.Search;
 using System;
 using System.Collections;
 using System.Collections.Generic;
