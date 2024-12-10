@@ -3,6 +3,7 @@ using PlasticGui.WorkspaceWindow.BrowseRepository;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -22,6 +23,7 @@ public class GameManager : MonoBehaviour
     public int currentMinute = 0;
     public float tempTrend = 37.0f; // Temperature (Celcius) the player's body trends towards.
 
+    public int objectivesCompleted = 0;
     public bool electricityWorking = true;
     public float failChance = 20.0f;
 
@@ -45,6 +47,12 @@ public class GameManager : MonoBehaviour
 
     public void CompleteObjective()
     {
+        objectivesCompleted++;
+        if (objectivesCompleted >= 3)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            SceneManager.LoadSceneAsync("Win");
+        }
         SpawnWildlife();
     }
 

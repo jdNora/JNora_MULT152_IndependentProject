@@ -4,5 +4,17 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Title.unity
+    guid: c5c6f545af83d264db3dcc63fd51b067
+  - enabled: 1
+    path: Assets/Scenes/ErwynBay.unity
+    guid: 79ad21a5994d71348b5412271ff782dc
+  - enabled: 1
+    path: Assets/Scenes/Win.unity
+    guid: 1d770340e3b1a704caf4baa6f1ba8d90
+  - enabled: 1
+    path: Assets/Scenes/Lose.unity
+    guid: 4304aff237db3e54db53f5f658e25b02
   m_configObjects: {}

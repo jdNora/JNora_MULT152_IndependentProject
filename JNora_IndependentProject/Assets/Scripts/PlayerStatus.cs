@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerStatus : MonoBehaviour
 {
@@ -85,6 +86,8 @@ public class PlayerStatus : MonoBehaviour
     void PlayerFaint()
     {
         Debug.Log("Player fainted...");
+        Cursor.lockState = CursorLockMode.None;
+        SceneManager.LoadSceneAsync("Lose");
 
         playerController.inputEnabled = false;
         conscious = false; // Game manager detects this and triggers game-wide events
